@@ -8,23 +8,22 @@
 
 buildscript {
     ext {
-        springBootVersion = '2.0.0.RC2'
+        springBootVersion = '2.0.0.RELEASE'
     }
     repositories {
         mavenCentral()
-        maven {
-            url "https://repo.spring.io/snapshot"
-        }
-        maven {
-            url "https://repo.spring.io/milestone"
-        }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
 
+wrapper {
+    version 4.5
+}
+
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 apply plugin: 'java'
 
 group 'com.nvisia'
@@ -35,7 +34,6 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 ext {
-    springBootVersion = '2.0.0.RC2'
     springBootAdminVersion = '2.0.0-SNAPSHOT'
 }
 
@@ -43,35 +41,21 @@ repositories {
     mavenCentral()
     jcenter()
     maven {
-        url 'https://repo.spring.io/snapshot'
-    }
-    maven {
-        url 'https://repo.spring.io/milestone'
-    }
-    maven {
-        // spring boot admin snapshots
         url 'https://oss.sonatype.org/content/repositories/snapshots'
     }
     mavenLocal()
 }
 
-
-wrapper {
-    version 4.5
-}
-
-repositories {
-    maven {
-        url 'https://repo.spring.io/libs-milestone'
-    }
-}
-
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-devtools")
+    compile("org.springframework.boot:spring-boot-actuator")
+
     compile("de.codecentric:spring-boot-admin-starter-server:$springBootAdminVersion")
 
-    compile("org.springframework.boot:spring-boot-devtools:$springBootVersion")
-    compile("org.springframework.boot:spring-boot-actuator:$springBootVersion")
-    
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+springBoot {
+    buildInfo()
 }
