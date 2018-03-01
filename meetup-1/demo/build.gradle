@@ -89,3 +89,9 @@ springBoot {
     buildInfo()
 }
 
+// Reconfigure bootRun task to pass
+// along the Java system properties
+// from the command-line.
+bootRun {
+    systemProperties System.properties
+}
