@@ -19,24 +19,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.nvisia.meetup.microservices.demo.service
 
-package com.nvisia.meetup.microservices.demo
+import com.nvisia.meetup.microservices.demo.domain.model.Chaos
+import com.nvisia.meetup.microservices.demo.domain.model.Foo
+import mu.KLogging
+import javax.inject.Inject
+import javax.inject.Named
 
-import okhttp3.OkHttpClient
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.cloud.commons.httpclient.DefaultOkHttpClientFactory
-import org.springframework.cloud.commons.httpclient.OkHttpClientFactory
-import org.springframework.context.annotation.Bean
+@Named
+class FooServiceImpl @Inject constructor(private val fooApiChain: FooApiChain) : FooService  {
 
-@SpringBootApplication
-class DemoApplication
+    companion object : KLogging()
 
-fun main(args: Array<String>) {
-    SpringApplication.run(DemoApplication::class.java, *args)
-}
+    override fun execute(chaos : Chaos): Foo {
+        logger.debug("execute: {}",chaos)
 
-@Bean
-fun okHttpClientFactory() : OkHttpClientFactory {
-    return DefaultOkHttpClientFactory(OkHttpClient.Builder())
+        if(chaos.latencyMilliseconds > 0) {
+            Thread.sleep(chaos.latencyMilliseconds)
+        }
+        if(chaos.exception) {
+            throw RuntimeException("EPIC FAILURE!!!")
+        }
+
+        for(fooapi in fooApiChain.instances) {
+            fooapi.helloFoo()
+        }
+
+        return Foo()
+    }
 }

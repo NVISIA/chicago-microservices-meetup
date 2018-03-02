@@ -19,24 +19,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.nvisia.meetup.microservices.demo.config
 
-package com.nvisia.meetup.microservices.demo
+import com.nvisia.meetup.microservices.demo.domain.client.ChaosHeaderConstants
+import feign.RequestInterceptor
+import feign.RequestTemplate
+import mu.KLogging
 
-import okhttp3.OkHttpClient
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.cloud.commons.httpclient.DefaultOkHttpClientFactory
-import org.springframework.cloud.commons.httpclient.OkHttpClientFactory
-import org.springframework.context.annotation.Bean
 
-@SpringBootApplication
-class DemoApplication
+class ExceptionFeignInterceptor : RequestInterceptor {
+    companion object : KLogging()
 
-fun main(args: Array<String>) {
-    SpringApplication.run(DemoApplication::class.java, *args)
-}
-
-@Bean
-fun okHttpClientFactory() : OkHttpClientFactory {
-    return DefaultOkHttpClientFactory(OkHttpClient.Builder())
+    override fun apply(template: RequestTemplate) {
+        logger.trace("Applying interceptor")
+        template.header(ChaosHeaderConstants.exceptionHeaderName,"true")
+    }
 }

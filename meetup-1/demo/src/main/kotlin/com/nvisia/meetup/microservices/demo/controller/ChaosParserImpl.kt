@@ -19,24 +19,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.nvisia.meetup.microservices.demo.controller
 
-package com.nvisia.meetup.microservices.demo
+import com.nvisia.meetup.microservices.demo.domain.client.ChaosHeaderConstants
+import com.nvisia.meetup.microservices.demo.domain.model.Chaos
+import mu.KLogging
+import javax.inject.Named
+import javax.servlet.http.HttpServletRequest
 
-import okhttp3.OkHttpClient
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.cloud.commons.httpclient.DefaultOkHttpClientFactory
-import org.springframework.cloud.commons.httpclient.OkHttpClientFactory
-import org.springframework.context.annotation.Bean
 
-@SpringBootApplication
-class DemoApplication
+@Named
+class ChaosParserImpl : ChaosParser {
 
-fun main(args: Array<String>) {
-    SpringApplication.run(DemoApplication::class.java, *args)
-}
+    companion object : KLogging()
 
-@Bean
-fun okHttpClientFactory() : OkHttpClientFactory {
-    return DefaultOkHttpClientFactory(OkHttpClient.Builder())
+    override fun parse(request: HttpServletRequest): Chaos {
+        val latencyHeaderValue = request.getHeader(ChaosHeaderConstants.latencyHeaderName)
+        val exceptionHeaderValue = request.getHeader(ChaosHeaderConstants.exceptionHeaderName)
+
+        logger.trace("latencyHeaderValue={};exceptionHeaderValue={}",latencyHeaderValue,exceptionHeaderValue)
+
+        return Chaos(latencyHeaderValue?.toLongOrNull() ?: 0,
+                exceptionHeaderValue?.toBoolean() ?: false)
+    }
 }

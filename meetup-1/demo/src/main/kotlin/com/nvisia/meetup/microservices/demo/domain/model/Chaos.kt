@@ -19,24 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.nvisia.meetup.microservices.demo.domain.model
 
-package com.nvisia.meetup.microservices.demo
 
-import okhttp3.OkHttpClient
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.cloud.commons.httpclient.DefaultOkHttpClientFactory
-import org.springframework.cloud.commons.httpclient.OkHttpClientFactory
-import org.springframework.context.annotation.Bean
-
-@SpringBootApplication
-class DemoApplication
-
-fun main(args: Array<String>) {
-    SpringApplication.run(DemoApplication::class.java, *args)
-}
-
-@Bean
-fun okHttpClientFactory() : OkHttpClientFactory {
-    return DefaultOkHttpClientFactory(OkHttpClient.Builder())
-}
+data class Chaos(val latencyMilliseconds: Long,val exception: Boolean)
