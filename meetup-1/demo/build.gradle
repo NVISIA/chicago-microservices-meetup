@@ -1,10 +1,13 @@
 buildscript {
     ext {
         kotlinVersion = '1.2.20'
-        springBootVersion = '1.5.10.RELEASE'
+        springBootVersion = '2.0.0.RELEASE'
     }
     repositories {
         mavenCentral()
+        maven {
+            url 'https://repo.spring.io/libs-milestone'
+        }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -12,6 +15,11 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
     }
 }
+
+wrapper {
+    version 4.5
+}
+
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'kotlin'
@@ -19,6 +27,7 @@ apply plugin: 'kotlin-spring'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 sourceCompatibility = 1.8
 compileKotlin {
@@ -34,24 +43,40 @@ compileTestKotlin {
     }
 }
 
-repositories {
-    mavenCentral()
+ext {
+    springCloudVersion = 'Finchley.BUILD-SNAPSHOT'
+    springBootAdminVersion = '2.0.0-SNAPSHOT'
 }
 
-
-ext {
-    springCloudVersion = 'Edgware.SR2'
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+    maven {
+        url "https://repo.spring.io/milestone"
+    }
+    maven {
+        url "https://repo.spring.io/snapshot"
+    }
+    mavenLocal()
 }
 
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.boot:spring-boot-starter-actuator')
-    compile('org.springframework.cloud:spring-cloud-starter-feign')
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-devtools")
+    compile("org.springframework.boot:spring-boot-actuator")
+
+    compile "de.codecentric:spring-boot-admin-starter-client:$springBootAdminVersion"
+
+    compile('org.springframework.cloud:spring-cloud-starter-openfeign')
     compile('org.springframework.cloud:spring-cloud-starter-sleuth')
+
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     compile('io.github.microutils:kotlin-logging:1.4.9')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
 dependencyManagement {
@@ -59,3 +84,8 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
+
+springBoot {
+    buildInfo()
+}
+
