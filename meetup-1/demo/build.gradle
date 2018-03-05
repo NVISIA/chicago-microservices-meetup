@@ -44,7 +44,7 @@ compileTestKotlin {
 }
 
 ext {
-    springCloudVersion = 'Finchley.M7'
+    springCloudVersion = 'Finchley.M8'
     springBootAdminVersion = '2.0.0-SNAPSHOT'
 
     okHttpBootVersion = '2.0.0-rc3'

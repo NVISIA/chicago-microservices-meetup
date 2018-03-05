@@ -37,21 +37,21 @@ class CallerConfigTest {
 
     @Test
     fun testCallerConfigSingleInstanceAndNoExceptionsAndNoLatencies() {
-        val config = CallerConfig("9001","","")
+        val config = CallerConfig("foo2","","")
 
         Assert.assertEquals(
-                listOf( CallerInstance(HostConfig("http","localhost",9001), Chaos(0,false))),
+                listOf( CallerInstance(HostConfig("foo2"), Chaos(0,false))),
                 config.callerInstances)
     }
 
     @Test
     fun testCallerConfigMultipleInstancesAndNoExceptionsAndNoLatencies() {
-        val config = CallerConfig("9001,9002,9003","","")
+        val config = CallerConfig("foo2,foo3,foo4","","")
 
         Assert.assertEquals(
-                listOf( CallerInstance(HostConfig("http","localhost",9001),Chaos(0,false)),
-                        CallerInstance(HostConfig("http","localhost",9002),Chaos(0,false)),
-                        CallerInstance(HostConfig("http","localhost",9003),Chaos(0,false))
+                listOf( CallerInstance(HostConfig("foo2"),Chaos(0,false)),
+                        CallerInstance(HostConfig("foo3"),Chaos(0,false)),
+                        CallerInstance(HostConfig("foo4"),Chaos(0,false))
                 ),
                 config.callerInstances)
 
@@ -59,12 +59,12 @@ class CallerConfigTest {
 
     @Test
     fun testCallerConfigMultipleInstancesAndNoExceptionsAndSomeLatencies() {
-        val config = CallerConfig("9001,9002,9003","9002-30000","")
+        val config = CallerConfig("foo2,foo3,foo4","foo3-30000","")
 
         Assert.assertEquals(
-                listOf( CallerInstance(HostConfig("http","localhost",9001),Chaos(0,false)),
-                        CallerInstance(HostConfig("http","localhost",9002),Chaos(30000,false)),
-                        CallerInstance(HostConfig("http","localhost",9003),Chaos(0,false))
+                listOf( CallerInstance(HostConfig("foo2"),Chaos(0,false)),
+                        CallerInstance(HostConfig("foo3"),Chaos(30000,false)),
+                        CallerInstance(HostConfig("foo4"),Chaos(0,false))
                 ),
                 config.callerInstances)
 
@@ -72,12 +72,12 @@ class CallerConfigTest {
 
     @Test
     fun testCallerConfigMultipleInstancesAndSomeExceptionsAndNoLatencies() {
-        val config = CallerConfig("9001,9002,9003","","9002")
+        val config = CallerConfig("foo2,foo3,foo4","","foo3")
 
         Assert.assertEquals(
-                listOf( CallerInstance(HostConfig("http","localhost",9001),Chaos(0,false)),
-                        CallerInstance(HostConfig("http","localhost",9002),Chaos(0,true)),
-                        CallerInstance(HostConfig("http","localhost",9003),Chaos(0,false))
+                listOf( CallerInstance(HostConfig("foo2"),Chaos(0,false)),
+                        CallerInstance(HostConfig("foo3"),Chaos(0,true)),
+                        CallerInstance(HostConfig("foo4"),Chaos(0,false))
                 ),
                 config.callerInstances)
 
@@ -85,12 +85,12 @@ class CallerConfigTest {
 
     @Test
     fun testCallerConfigMultipleInstancesAndSomeExceptionsAndSomeLatencies() {
-        val config = CallerConfig("9001,9002,9003","9001-30000,9002-40000","9003")
+        val config = CallerConfig("foo2,foo3,foo4","foo2-30000,foo3-40000","foo4")
 
         Assert.assertEquals(
-                listOf( CallerInstance(HostConfig("http","localhost",9001),Chaos(30000,false)),
-                        CallerInstance(HostConfig("http","localhost",9002),Chaos(40000,false)),
-                        CallerInstance(HostConfig("http","localhost",9003),Chaos(0,true))
+                listOf( CallerInstance(HostConfig("foo2"),Chaos(30000,false)),
+                        CallerInstance(HostConfig("foo3"),Chaos(40000,false)),
+                        CallerInstance(HostConfig("foo4"),Chaos(0,true))
                 ),
                 config.callerInstances)
 

@@ -25,8 +25,6 @@ package com.nvisia.meetup.microservices.demo
 import okhttp3.OkHttpClient
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.cloud.commons.httpclient.DefaultOkHttpClientFactory
-import org.springframework.cloud.commons.httpclient.OkHttpClientFactory
 import org.springframework.context.annotation.Bean
 
 @SpringBootApplication
@@ -37,6 +35,6 @@ fun main(args: Array<String>) {
 }
 
 @Bean
-fun okHttpClientFactory() : OkHttpClientFactory {
-    return DefaultOkHttpClientFactory(OkHttpClient.Builder())
+fun client() : feign.okhttp.OkHttpClient{
+    return feign.okhttp.OkHttpClient(OkHttpClient())
 }

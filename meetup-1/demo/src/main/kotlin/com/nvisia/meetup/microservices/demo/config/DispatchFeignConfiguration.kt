@@ -23,13 +23,16 @@ package com.nvisia.meetup.microservices.demo.config
 
 import com.nvisia.meetup.microservices.demo.domain.api.FooApi
 import com.nvisia.meetup.microservices.demo.service.FooApiChain
+import feign.Client
 import feign.Feign
 import feign.Logger
+import feign.slf4j.Slf4jLogger
 import mu.KLogging
 import org.springframework.cloud.commons.httpclient.OkHttpClientFactory
 import org.springframework.cloud.openfeign.FeignClientsConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import kotlin.reflect.KClass
 
 @Configuration
 class DispatchFeignConfiguration : FeignClientsConfiguration() {
@@ -37,6 +40,7 @@ class DispatchFeignConfiguration : FeignClientsConfiguration() {
     companion object : KLogging()
 
     @Bean fun fooApiChain(
+            client : Client,
             callerConfig : CallerConfig,chaosInterceptorFactory : ChaosInterceptorFactory,
             clientFactory : OkHttpClientFactory) : FooApiChain {
         val clients = mutableListOf<FooApi>()
@@ -46,7 +50,8 @@ class DispatchFeignConfiguration : FeignClientsConfiguration() {
             val callerUrl = urlForConfig(caller)
             logger.info("Configuring {}",callerUrl)
 
-            val builder = baseBuilder(clientFactory)
+            val builder = baseBuilder(client,FooApi::class)
+
             for(interceptor in chaosInterceptorFactory.requestInterceptorsFor(caller.chaos)) {
                 builder.requestInterceptor(interceptor)
             }
@@ -59,18 +64,23 @@ class DispatchFeignConfiguration : FeignClientsConfiguration() {
 
     private fun urlForConfig(callerInstance: CallerInstance) : String {
         val hostConfig = callerInstance.hostConfig
-        return "${hostConfig.scheme}://${hostConfig.hostName}:${hostConfig.port}"
+        return "http://${hostConfig.serviceId}"
     }
 
-    private fun  baseBuilder(clientFactory : OkHttpClientFactory) : Feign.Builder {
-        val client = clientFactory.createBuilder(true).build()
-
+    private fun  baseBuilder(client : Client,target: KClass<FooApi>) : Feign.Builder {
         return feignBuilder(feignRetryer())
                 .encoder(feignEncoder())
                 .decoder(feignDecoder())
                 .contract(feignContract(feignConversionService()))
+                .logger(Slf4jLogger(target.qualifiedName))
                 .logLevel(Logger.Level.FULL)
-                .client(feign.okhttp.OkHttpClient(client))
+                .client(client)
     }
+
+//    @Bean
+//    @Scope("prototype")
+//    fun feignBuilder(client: Client) : Feign.Builder  {
+//        return baseBuilder(client)
+//    }
 
 }

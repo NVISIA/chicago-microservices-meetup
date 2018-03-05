@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration
 /**
  *     Parses input configuration from command line.
  *
- *     ./gradlew -Dserver.port=9001 -Dcom.nvisia.demo.chain=9002,9003,9004 -Dcom.nvisia.demo.latency = 9003-5000,9002-5000 -Dcom.nvisia.demo.exception=9004
+ *     ./gradlew -Dserver.port=9001 -Dcom.nvisia.demo.chain=foo2,foo3,foo4 -Dcom.nvisia.demo.latency = foo1-5000,foo2-5000 -Dcom.nvisia.demo.exception=foo2
  */
 @Configuration
 class CallerConfig {
@@ -49,33 +49,31 @@ class CallerConfig {
     private fun parseCallersList(callChainString: String) : List<HostConfig> {
         return callChainString.split(',')
                 .filter { !it.isEmpty() }
-                .map { portString ->
-                    HostConfig("http","localhost",portString.toInt())
+                .map { serviceId -> HostConfig(serviceId)
                 }
     }
 
-    private fun parsePortToTimeDelayMap(latencyConfig: String) : Map<Int,Long> {
+    private fun parsePortToTimeDelayMap(latencyConfig: String) : Map<String,Long> {
         //9003-5000,9002-5000
         return latencyConfig.split(",")
                 .filter { token -> token.count {it == '-'} == 1}
                 .map { token -> token.split("-")}
-                .map { pair ->  pair[0].toInt() to pair[1].toLong() }
+                .map { pair ->  pair[0] to pair[1].toLong() }
                 .toMap()
     }
 
-    private fun parseExceptionCallerPortNumbersSet(exceptionConfig: String) : Set<Int> {
+    private fun parseExceptionCallerPortNumbersSet(exceptionConfig: String) : Set<String> {
         return HashSet(exceptionConfig.split(',')
-                .filter { !it.isEmpty() }
-                .map { string -> string.toInt()})
+                .filter { !it.isEmpty() })
     }
 
     private fun toInstances(
             callers : List<HostConfig>,
-            latencyMap: Map<Int,Long>,
-            exceptionCallers: Set<Int>) : List<CallerInstance> {
+            latencyMap: Map<String,Long>,
+            exceptionCallers: Set<String>) : List<CallerInstance> {
 
         return callers.map { caller -> CallerInstance(caller,
-                Chaos(latencyMap[caller.port]?:0, exceptionCallers.contains(caller.port)))
+                Chaos(latencyMap[caller.serviceId]?:0, exceptionCallers.contains(caller.serviceId)))
         }
     }
 }
