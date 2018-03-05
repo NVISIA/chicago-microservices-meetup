@@ -24,12 +24,15 @@ package com.nvisia.meetup.microservices.demo.config
 import com.nvisia.meetup.microservices.demo.domain.client.ChaosHeaderConstants
 import feign.RequestInterceptor
 import feign.RequestTemplate
+import mu.KLogging
 
 
 class LatencyFeignInterceptor(private val latencyMilliseconds: Long) : RequestInterceptor {
 
+    companion object : KLogging()
+
     override fun apply(template: RequestTemplate) {
-        ExceptionFeignInterceptor.logger.trace("Applying interceptor: {}ms",latencyMilliseconds)
+        logger.trace("Applying interceptor: {}ms",latencyMilliseconds)
         template.header(ChaosHeaderConstants.latencyHeaderName,"$latencyMilliseconds")
     }
 }

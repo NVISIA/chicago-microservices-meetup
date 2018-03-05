@@ -21,6 +21,7 @@
  */
 package com.nvisia.meetup.microservices.demo.config
 
+import brave.Tracing
 import com.nvisia.meetup.microservices.demo.domain.api.FooApi
 import com.nvisia.meetup.microservices.demo.service.FooApiChain
 import feign.Client
@@ -28,7 +29,6 @@ import feign.Feign
 import feign.Logger
 import feign.slf4j.Slf4jLogger
 import mu.KLogging
-import org.springframework.cloud.commons.httpclient.OkHttpClientFactory
 import org.springframework.cloud.openfeign.FeignClientsConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -42,7 +42,7 @@ class DispatchFeignConfiguration : FeignClientsConfiguration() {
     @Bean fun fooApiChain(
             client : Client,
             callerConfig : CallerConfig,chaosInterceptorFactory : ChaosInterceptorFactory,
-            clientFactory : OkHttpClientFactory) : FooApiChain {
+            tracing: Tracing) : FooApiChain {
         val clients = mutableListOf<FooApi>()
 
         //https://cloud.spring.io/spring-cloud-static/Camden.SR6/#_creating_feign_clients_manually
@@ -51,6 +51,7 @@ class DispatchFeignConfiguration : FeignClientsConfiguration() {
             logger.info("Configuring {}",callerUrl)
 
             val builder = baseBuilder(client,FooApi::class)
+            builder.requestInterceptor(SleuthFeignInterceptor(tracing))
 
             for(interceptor in chaosInterceptorFactory.requestInterceptorsFor(caller.chaos)) {
                 builder.requestInterceptor(interceptor)
