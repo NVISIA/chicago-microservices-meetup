@@ -44,7 +44,7 @@ compileTestKotlin {
 }
 
 ext {
-    springCloudVersion = 'Finchley.M8'
+    springCloudVersion = 'Finchley.BUILD-SNAPSHOT'
     springBootAdminVersion = '2.0.0-SNAPSHOT'
 
     okHttpBootVersion = '2.0.0-rc3'
@@ -83,8 +83,7 @@ dependencies {
     compile "com.squareup.okhttp3:okhttp:$okHttpClientVersion"
 
     compile('org.springframework.cloud:spring-cloud-starter-sleuth')
-    compile('org.springframework.cloud:spring-cloud-sleuth-zipkin')
-
+    compile('org.springframework.cloud:spring-cloud-starter-zipkin')
 
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")

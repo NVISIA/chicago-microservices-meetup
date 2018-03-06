@@ -22,10 +22,8 @@
 
 package com.nvisia.meetup.microservices.demo
 
-import okhttp3.OkHttpClient
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.context.annotation.Bean
 
 @SpringBootApplication
 class DemoApplication
@@ -34,7 +32,7 @@ fun main(args: Array<String>) {
     SpringApplication.run(DemoApplication::class.java, *args)
 }
 
-@Bean
-fun client() : feign.okhttp.OkHttpClient{
-    return feign.okhttp.OkHttpClient(OkHttpClient())
-}
+//@Bean
+//fun client() : feign.okhttp.OkHttpClient{
+//    return feign.okhttp.OkHttpClient(OkHttpClient())
+//}
