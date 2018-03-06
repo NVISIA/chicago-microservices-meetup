@@ -21,10 +21,10 @@
  */
 package com.nvisia.meetup.microservices.demo.domain.client
 
+import com.nvisia.meetup.microservices.demo.config.FooFeignConfiguration
+import com.nvisia.meetup.microservices.demo.domain.api.FooApi
+import org.springframework.cloud.openfeign.FeignClient
 
-class ChaosHeaderConstants {
-    companion object {
-        const val latencyHeaderName = "X-Chaos-Latency-MS"
-        const val exceptionHeaderName ="X-Chaos-Exception"
-    }
-}
+
+@FeignClient(name="foo1",configuration = [FooFeignConfiguration::class])
+interface Foo1Client: FooApi

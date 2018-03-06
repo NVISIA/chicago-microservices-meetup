@@ -19,15 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.nvisia.meetup.microservices.demo.controller
+package com.nvisia.meetup.microservices.demo.domain.client
 
-import com.nvisia.meetup.microservices.demo.domain.model.Chaos
-import javax.servlet.http.HttpServletRequest
-
-
-interface ChaosParser {
+import com.nvisia.meetup.microservices.demo.config.FooFeignConfiguration
+import com.nvisia.meetup.microservices.demo.domain.api.FooApi
+import org.springframework.cloud.openfeign.FeignClient
 
 
-
-    fun parse(request: HttpServletRequest) : Chaos
-}
+@FeignClient(name="foo5",configuration = [FooFeignConfiguration::class])
+interface Foo5Client: FooApi

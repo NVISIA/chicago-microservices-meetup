@@ -19,25 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.nvisia.meetup.microservices.demo.config
+package com.nvisia.meetup.microservices.demo.domain.client
 
-import com.nvisia.meetup.microservices.demo.domain.model.Chaos
-import feign.RequestInterceptor
-import javax.inject.Named
+import com.nvisia.meetup.microservices.demo.config.FooFeignConfiguration
+import com.nvisia.meetup.microservices.demo.domain.api.FooApi
+import org.springframework.cloud.openfeign.FeignClient
 
 
-@Named
-class ChaosInterceptorFactoryImpl : ChaosInterceptorFactory{
-    override fun requestInterceptorsFor(chaos: Chaos): List<RequestInterceptor> {
-        val interceptors = mutableListOf<RequestInterceptor>()
-
-        if(chaos.exception) {
-            interceptors.add(ExceptionFeignInterceptor())
-        }
-        if(chaos.latencyMilliseconds > 0) {
-            interceptors.add(LatencyFeignInterceptor(chaos.latencyMilliseconds))
-        }
-
-        return interceptors
-    }
-}
+@FeignClient(name="foo2",configuration = [FooFeignConfiguration::class])
+interface Foo2Client: FooApi

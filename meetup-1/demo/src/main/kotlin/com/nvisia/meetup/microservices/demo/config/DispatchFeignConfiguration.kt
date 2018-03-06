@@ -22,56 +22,38 @@
 package com.nvisia.meetup.microservices.demo.config
 
 import com.nvisia.meetup.microservices.demo.domain.api.FooApi
+import com.nvisia.meetup.microservices.demo.domain.client.*
 import com.nvisia.meetup.microservices.demo.service.FooApiChain
-import feign.Client
-import feign.Feign
-import feign.Logger
-import feign.slf4j.Slf4jLogger
 import mu.KLogging
-import org.springframework.cloud.openfeign.FeignClientsConfiguration
+import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import kotlin.reflect.KClass
 
 @Configuration
-class DispatchFeignConfiguration : FeignClientsConfiguration() {
+@EnableFeignClients(basePackageClasses = [Foo1Client::class])
+class DispatchFeignConfiguration {
 
     companion object : KLogging()
 
     @Bean fun fooApiChain(
-            client : Client,
-            callerConfig : CallerConfig,chaosInterceptorFactory : ChaosInterceptorFactory) : FooApiChain {
+            foo1: Foo1Client,
+            foo2: Foo2Client,
+            foo3: Foo3Client,
+            foo4: Foo4Client,
+            foo5: Foo5Client,
+            callerConfig : CallerConfig) : FooApiChain {
         val clients = mutableListOf<FooApi>()
 
-        //https://cloud.spring.io/spring-cloud-static/Camden.SR6/#_creating_feign_clients_manually
         for(caller in callerConfig.callerInstances) {
-            val callerUrl = urlForConfig(caller)
-            logger.info("Configuring {}",callerUrl)
-
-            val builder = baseBuilder(client,FooApi::class)
-
-            for(interceptor in chaosInterceptorFactory.requestInterceptorsFor(caller.chaos)) {
-                builder.requestInterceptor(interceptor)
+            when(caller.hostConfig.serviceId) {
+                "foo1" -> clients.add(foo1)
+                "foo2" -> clients.add(foo2)
+                "foo3" -> clients.add(foo3)
+                "foo4" -> clients.add(foo4)
+                "foo5" -> clients.add(foo5)
             }
-
-            clients.add(builder.target(FooApi::class.java,callerUrl))
         }
 
         return FooApiChain(clients.toList())
-    }
-
-    private fun urlForConfig(callerInstance: CallerInstance) : String {
-        val hostConfig = callerInstance.hostConfig
-        return "http://${hostConfig.serviceId}"
-    }
-
-    private fun  baseBuilder(client : Client,target: KClass<FooApi>) : Feign.Builder {
-        return feignBuilder(feignRetryer())
-                .encoder(feignEncoder())
-                .decoder(feignDecoder())
-                .contract(feignContract(feignConversionService()))
-                .logger(Slf4jLogger(target.qualifiedName))
-                .logLevel(Logger.Level.FULL)
-                .client(client)
     }
 }

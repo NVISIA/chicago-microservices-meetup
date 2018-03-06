@@ -19,19 +19,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.nvisia.meetup.microservices.demo.config
 
-import com.nvisia.meetup.microservices.demo.domain.client.ChaosHeaderConstants
-import feign.RequestInterceptor
-import feign.RequestTemplate
-import mu.KLogging
+import feign.Logger
+import feign.Request
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.core.env.ConfigurableEnvironment
 
 
-class ExceptionFeignInterceptor : RequestInterceptor {
-    companion object : KLogging()
+@Configuration
+class FooFeignConfiguration  {
 
-    override fun apply(template: RequestTemplate) {
-        logger.trace("Applying interceptor")
-        template.header(ChaosHeaderConstants.exceptionHeaderName,"true")
+    fun feignCloggerLevel() : Logger.Level {
+        return Logger.Level.FULL
+    }
+
+    @Bean
+    fun requestOptions(env: ConfigurableEnvironment): Request.Options {
+        return Request.Options(60000,60000)
     }
 }

@@ -22,18 +22,13 @@
 
 package com.nvisia.meetup.microservices.demo.controller
 
+import com.nvisia.meetup.microservices.demo.config.CallerConfig
 import com.nvisia.meetup.microservices.demo.domain.api.FooApi
 import com.nvisia.meetup.microservices.demo.domain.model.Foo
 import com.nvisia.meetup.microservices.demo.service.FooService
 import mu.KLogging
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
-
-
-
 
 /**
  *
@@ -41,18 +36,13 @@ import javax.servlet.http.HttpServletRequest
  * @author Julio Cesar Villalta III <jvillalta@nvisia.com>
  */
 @RestController("")
-class FooController @Inject constructor(private val fooService: FooService,private val chaosParser: ChaosParser) : FooApi {
+class FooController @Inject constructor(private val fooService: FooService,private val config: CallerConfig) : FooApi {
 
     companion object : KLogging()
 
     override fun helloFoo(): Foo {
         logger.info("Called helloFoo...")
 
-        return fooService.execute(chaosParser.parse(currentRequest()))
-    }
-
-    private fun currentRequest() : HttpServletRequest {
-        val servletRequestAttributes = RequestContextHolder.getRequestAttributes() as ServletRequestAttributes?
-        return servletRequestAttributes!!.request
+        return fooService.execute(config.chaos)
     }
 }

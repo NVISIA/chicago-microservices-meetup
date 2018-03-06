@@ -19,27 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.nvisia.meetup.microservices.demo.controller
+package com.nvisia.meetup.microservices.demo.domain.client
 
-import com.nvisia.meetup.microservices.demo.domain.client.ChaosHeaderConstants
-import com.nvisia.meetup.microservices.demo.domain.model.Chaos
-import mu.KLogging
-import javax.inject.Named
-import javax.servlet.http.HttpServletRequest
+import com.nvisia.meetup.microservices.demo.config.FooFeignConfiguration
+import com.nvisia.meetup.microservices.demo.domain.api.FooApi
+import org.springframework.cloud.openfeign.FeignClient
 
 
-@Named
-class ChaosParserImpl : ChaosParser {
-
-    companion object : KLogging()
-
-    override fun parse(request: HttpServletRequest): Chaos {
-        val latencyHeaderValue = request.getHeader(ChaosHeaderConstants.latencyHeaderName)
-        val exceptionHeaderValue = request.getHeader(ChaosHeaderConstants.exceptionHeaderName)
-
-        logger.trace("latencyHeaderValue={};exceptionHeaderValue={}",latencyHeaderValue,exceptionHeaderValue)
-
-        return Chaos(latencyHeaderValue?.toLongOrNull() ?: 0,
-                exceptionHeaderValue?.toBoolean() ?: false)
-    }
-}
+@FeignClient(name="foo4",configuration = [FooFeignConfiguration::class])
+interface Foo4Client: FooApi
