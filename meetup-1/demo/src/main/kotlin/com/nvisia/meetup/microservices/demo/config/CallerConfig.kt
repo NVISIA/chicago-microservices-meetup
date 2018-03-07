@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration
 /**
  *     Parses input configuration from command line.
  *
- *     ./gradlew -Dserver.port=9001 -Dcom.nvisia.demo.chain=foo2,foo3,foo4 -Dcom.nvisia.demo.latency = foo1-5000,foo2-5000 -Dcom.nvisia.demo.exception=foo2
+ *     ./gradlew -Dserver.port=9001 -Dcom.nvisia.demo.chain=foo2,foo3,foo4 -Dcom.nvisia.demo.latency=5000 -Dcom.nvisia.demo.exception=true
  */
 @Configuration
 class CallerConfig {

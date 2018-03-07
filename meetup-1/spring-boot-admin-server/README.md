@@ -8,3 +8,11 @@ dependencies {
 compile('de.codecentric:spring-boot-admin-starter-client:2.0.0-SNAPSHOT')
 ```
 
+Run with
+```
+./gradlew bootRun
+```
+It is configured to listen on port 9000
+<p>
+http://localhost:9000
+</p>

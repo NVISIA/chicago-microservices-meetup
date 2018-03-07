@@ -38,12 +38,13 @@ class FooServiceImpl @Inject constructor(private val fooApiChain: FooApiChain) :
         if(chaos.latencyMilliseconds > 0) {
             Thread.sleep(chaos.latencyMilliseconds)
         }
-        if(chaos.exception) {
-            throw RuntimeException("EPIC FAILURE!!!")
-        }
-
+        
         for(fooapi in fooApiChain.instances) {
             fooapi.helloFoo()
+        }
+
+        if(chaos.exception) {
+            throw RuntimeException("EPIC FAILURE!!!")
         }
 
         return Foo()
