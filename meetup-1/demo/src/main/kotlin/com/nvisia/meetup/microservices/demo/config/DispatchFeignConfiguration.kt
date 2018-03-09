@@ -35,17 +35,17 @@ class DispatchFeignConfiguration {
 
     companion object : KLogging()
 
-    @Bean fun fooApiChain(
-            foo1: Foo1Client,
-            foo2: Foo2Client,
-            foo3: Foo3Client,
-            foo4: Foo4Client,
-            foo5: Foo5Client,
-            callerConfig : CallerConfig) : FooApiChain {
+    @Bean
+    fun fooApiChain(foo1: Foo1Client,
+                    foo2: Foo2Client,
+                    foo3: Foo3Client,
+                    foo4: Foo4Client,
+                    foo5: Foo5Client,
+                    callerConfig: CallerConfig): FooApiChain {
         val clients = mutableListOf<FooApi>()
 
-        for(caller in callerConfig.callerInstances) {
-            when(caller.hostConfig.serviceId) {
+        for (caller in callerConfig.callerInstances) {
+            when (caller.hostConfig.serviceId) {
                 "foo1" -> clients.add(foo1)
                 "foo2" -> clients.add(foo2)
                 "foo3" -> clients.add(foo3)

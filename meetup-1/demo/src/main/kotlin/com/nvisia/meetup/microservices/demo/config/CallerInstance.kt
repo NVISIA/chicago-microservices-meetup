@@ -21,5 +21,4 @@
  */
 package com.nvisia.meetup.microservices.demo.config
 
-data class CallerInstance(
-        val hostConfig: HostConfig)
+data class CallerInstance(val hostConfig: HostConfig)

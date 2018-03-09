@@ -30,14 +30,15 @@ import org.springframework.core.env.ConfigurableEnvironment
 
 
 @Configuration
-class FooFeignConfiguration  {
+class FooFeignConfiguration {
 
-    fun feignCloggerLevel() : Logger.Level {
+    @Bean
+    fun feignLoggerLevel(): Logger.Level {
         return Logger.Level.FULL
     }
 
     @Bean
     fun requestOptions(env: ConfigurableEnvironment): Request.Options {
-        return Request.Options(60000,60000)
+        return Request.Options(60000, 60000)
     }
 }

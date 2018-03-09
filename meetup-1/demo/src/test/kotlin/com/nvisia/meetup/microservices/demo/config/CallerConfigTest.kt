@@ -21,6 +21,7 @@
  */
 package com.nvisia.meetup.microservices.demo.config
 
+import com.nvisia.meetup.microservices.demo.config.properties.CallerProperties
 import com.nvisia.meetup.microservices.demo.domain.model.Chaos
 import org.junit.Assert
 import org.junit.Test
@@ -30,71 +31,74 @@ class CallerConfigTest {
 
     @Test
     fun testCallerConfigEmpty() {
-        val config = CallerConfig("","","")
-
+        val callerProperties = CallerProperties(emptyList(), 0, false)
+        val config = CallerConfig(callerProperties)
         Assert.assertTrue(config.callerInstances.isEmpty())
     }
 
     @Test
     fun testCallerConfigSingleInstanceAndNoExceptionsAndNoLatencies() {
-        val config = CallerConfig("foo2","","")
-
-        Assert.assertEquals(listOf( CallerInstance(HostConfig("foo2"))),config.callerInstances)
-        Assert.assertEquals(Chaos(0,false),config.chaos)
+        val callerProperties = CallerProperties(listOf("foo2"), 0, false)
+        val config = CallerConfig(callerProperties)
+        Assert.assertEquals(listOf(CallerInstance(HostConfig("foo2"))), config.callerInstances)
+        Assert.assertEquals(Chaos(0, false), config.chaos)
     }
 
     @Test
     fun testCallerConfigMultipleInstancesAndNoExceptionsAndNoLatencies() {
-        val config = CallerConfig("foo2,foo3,foo4","","")
-
+        val callerProperties = CallerProperties(listOf("foo2", "foo3", "foo4"), 0, false)
+        val config = CallerConfig(callerProperties)
         Assert.assertEquals(
-                config.callerInstances,
-                listOf( CallerInstance(HostConfig("foo2")),
-                        CallerInstance(HostConfig("foo3")),
-                        CallerInstance(HostConfig("foo4")))
+            config.callerInstances,
+            listOf(CallerInstance(HostConfig("foo2")),
+                CallerInstance(HostConfig("foo3")),
+                CallerInstance(HostConfig("foo4")))
         )
 
-        Assert.assertEquals(Chaos(0,false),config.chaos)
+        Assert.assertEquals(Chaos(0, false), config.chaos)
     }
 
     @Test
     fun testCallerConfigMultipleInstancesAndNoExceptionsAndSomeLatencies() {
-        val config = CallerConfig("foo2,foo3,foo4","30000","")
+        val callerProperties = CallerProperties(listOf("foo2", "foo3", "foo4"), 30000, false)
+        val config = CallerConfig(callerProperties)
 
         Assert.assertEquals(
-                config.callerInstances,
-                listOf( CallerInstance(HostConfig("foo2")),
-                        CallerInstance(HostConfig("foo3")),
-                        CallerInstance(HostConfig("foo4")))
-                )
-        Assert.assertEquals(Chaos(30000,false), config.chaos)
+            config.callerInstances,
+            listOf(CallerInstance(HostConfig("foo2")),
+                CallerInstance(HostConfig("foo3")),
+                CallerInstance(HostConfig("foo4")))
+        )
+        Assert.assertEquals(Chaos(30000, false), config.chaos)
     }
 
     @Test
     fun testCallerConfigMultipleInstancesAndSomeExceptionsAndNoLatencies() {
-        val config = CallerConfig("foo2,foo3,foo4","","true")
+        val callerProperties = CallerProperties(listOf("foo2", "foo3", "foo4"), 0, true)
+        val config = CallerConfig(callerProperties)
 
         Assert.assertEquals(
-                config.callerInstances,
-                listOf( CallerInstance(HostConfig("foo2")),
-                        CallerInstance(HostConfig("foo3")),
-                        CallerInstance(HostConfig("foo4")))
-                )
+            config.callerInstances,
+            listOf(CallerInstance(HostConfig("foo2")),
+                CallerInstance(HostConfig("foo3")),
+                CallerInstance(HostConfig("foo4")))
+        )
 
-        Assert.assertEquals(Chaos(0,true), config.chaos)
+        Assert.assertEquals(Chaos(0, true), config.chaos)
     }
 
     @Test
     fun testCallerConfigMultipleInstancesAndSomeExceptionsAndSomeLatencies() {
-        val config = CallerConfig("foo2,foo3,foo4","40000","true")
+        val callerProperties = CallerProperties(listOf("foo2", "foo3", "foo4"), 40000, true)
+        val config = CallerConfig(callerProperties)
 
         Assert.assertEquals(
-                config.callerInstances,
-                listOf( CallerInstance(HostConfig("foo2")),
-                        CallerInstance(HostConfig("foo3")),
-                        CallerInstance(HostConfig("foo4")))
+            config.callerInstances,
+            listOf(CallerInstance(HostConfig("foo2")),
+                CallerInstance(HostConfig("foo3")),
+                CallerInstance(HostConfig("foo4")))
         )
 
-        Assert.assertEquals(Chaos(40000,true),config.chaos)
+        Assert.assertEquals(Chaos(40000, true), config.chaos)
     }
 }
