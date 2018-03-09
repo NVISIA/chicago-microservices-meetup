@@ -19,22 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.nvisia.meetup.microservices.demo.config
 
-package com.nvisia.meetup.microservices.demo
-
-import okhttp3.OkHttpClient
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.context.annotation.Bean
-
-@SpringBootApplication
-class DemoApplication
-
-fun main(args: Array<String>) {
-    SpringApplication.run(DemoApplication::class.java, *args)
-}
-
-@Bean
-fun client() : feign.okhttp.OkHttpClient{
-    return feign.okhttp.OkHttpClient(OkHttpClient())
-}
+data class CallerInstance(
+        val hostConfig: HostConfig)

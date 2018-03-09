@@ -23,7 +23,8 @@
 package com.nvisia.meetup.microservices.demo.domain.api
 
 import com.nvisia.meetup.microservices.demo.domain.model.Foo
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 
 /**
  *
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping
  * @author Julio Cesar Villalta III <jvillalta@nvisia.com>
  */
 interface FooApi {
-    @GetMapping("/hello")
+    // @GetMapping not supported - https://github.com/spring-cloud/spring-cloud-netflix/issues/760
+    @RequestMapping("/hello",method=[RequestMethod.GET])
     fun helloFoo(): Foo
 }

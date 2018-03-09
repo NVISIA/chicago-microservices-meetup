@@ -20,21 +20,24 @@
  * SOFTWARE.
  */
 
-package com.nvisia.meetup.microservices.demo
+package com.nvisia.meetup.microservices.demo.config
 
-import okhttp3.OkHttpClient
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.SpringBootApplication
+import feign.Logger
+import feign.Request
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.core.env.ConfigurableEnvironment
 
-@SpringBootApplication
-class DemoApplication
 
-fun main(args: Array<String>) {
-    SpringApplication.run(DemoApplication::class.java, *args)
-}
+@Configuration
+class FooFeignConfiguration  {
 
-@Bean
-fun client() : feign.okhttp.OkHttpClient{
-    return feign.okhttp.OkHttpClient(OkHttpClient())
+    fun feignCloggerLevel() : Logger.Level {
+        return Logger.Level.FULL
+    }
+
+    @Bean
+    fun requestOptions(env: ConfigurableEnvironment): Request.Options {
+        return Request.Options(60000,60000)
+    }
 }

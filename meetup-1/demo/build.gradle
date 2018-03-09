@@ -30,6 +30,8 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 sourceCompatibility = 1.8
+version = 1.0
+
 compileKotlin {
     kotlinOptions {
         freeCompilerArgs = ["-Xjsr305=strict"]
@@ -46,6 +48,10 @@ compileTestKotlin {
 ext {
     springCloudVersion = 'Finchley.BUILD-SNAPSHOT'
     springBootAdminVersion = '2.0.0-SNAPSHOT'
+
+    okHttpBootVersion = '2.0.0-rc3'
+    okHttpClientFeignVersion = '9.5.1'
+    okHttpClientVersion = '3.10.0'
 }
 
 repositories {
@@ -59,6 +65,9 @@ repositories {
     maven {
         url "https://repo.spring.io/snapshot"
     }
+    maven {
+        url 'https://jitpack.io'
+    }
     mavenLocal()
 }
 
@@ -70,7 +79,13 @@ dependencies {
     compile "de.codecentric:spring-boot-admin-starter-client:$springBootAdminVersion"
 
     compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+
+    compile "io.freefair.okhttp-spring-boot:okhttp3-spring-boot-starter:$okHttpBootVersion"
+    compile("io.github.openfeign:feign-okhttp:$okHttpClientFeignVersion")
+    compile "com.squareup.okhttp3:okhttp:$okHttpClientVersion"
+
     compile('org.springframework.cloud:spring-cloud-starter-sleuth')
+    compile('org.springframework.cloud:spring-cloud-starter-zipkin')
 
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
@@ -89,3 +104,9 @@ springBoot {
     buildInfo()
 }
 
+// Reconfigure bootRun task to pass
+// along the Java system properties
+// from the command-line.
+bootRun {
+    systemProperties System.properties
+}

@@ -19,30 +19,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.nvisia.meetup.microservices.demo.config
 
-package com.nvisia.meetup.microservices.demo.controller
-
-import com.nvisia.meetup.microservices.demo.config.CallerConfig
 import com.nvisia.meetup.microservices.demo.domain.api.FooApi
-import com.nvisia.meetup.microservices.demo.domain.model.Foo
-import com.nvisia.meetup.microservices.demo.service.FooService
+import com.nvisia.meetup.microservices.demo.domain.client.*
+import com.nvisia.meetup.microservices.demo.service.FooApiChain
 import mu.KLogging
-import org.springframework.web.bind.annotation.RestController
-import javax.inject.Inject
+import org.springframework.cloud.openfeign.EnableFeignClients
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
-/**
- *
- *
- * @author Julio Cesar Villalta III <jvillalta@nvisia.com>
- */
-@RestController("")
-class FooController @Inject constructor(private val fooService: FooService,private val config: CallerConfig) : FooApi {
+@Configuration
+@EnableFeignClients(basePackageClasses = [Foo1Client::class])
+class DispatchFeignConfiguration {
 
     companion object : KLogging()
 
-    override fun helloFoo(): Foo {
-        logger.info("Called helloFoo...")
+    @Bean fun fooApiChain(
+            foo1: Foo1Client,
+            foo2: Foo2Client,
+            foo3: Foo3Client,
+            foo4: Foo4Client,
+            foo5: Foo5Client,
+            callerConfig : CallerConfig) : FooApiChain {
+        val clients = mutableListOf<FooApi>()
 
-        return fooService.execute(config.chaos)
+        for(caller in callerConfig.callerInstances) {
+            when(caller.hostConfig.serviceId) {
+                "foo1" -> clients.add(foo1)
+                "foo2" -> clients.add(foo2)
+                "foo3" -> clients.add(foo3)
+                "foo4" -> clients.add(foo4)
+                "foo5" -> clients.add(foo5)
+            }
+        }
+
+        return FooApiChain(clients.toList())
     }
 }

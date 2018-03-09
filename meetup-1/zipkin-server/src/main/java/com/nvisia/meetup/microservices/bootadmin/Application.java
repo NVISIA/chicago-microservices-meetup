@@ -20,21 +20,16 @@
  * SOFTWARE.
  */
 
-package com.nvisia.meetup.microservices.demo
+package com.nvisia.meetup.microservices.bootadmin;
 
-import okhttp3.OkHttpClient
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.context.annotation.Bean
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import zipkin.server.EnableZipkinServer;
 
 @SpringBootApplication
-class DemoApplication
-
-fun main(args: Array<String>) {
-    SpringApplication.run(DemoApplication::class.java, *args)
-}
-
-@Bean
-fun client() : feign.okhttp.OkHttpClient{
-    return feign.okhttp.OkHttpClient(OkHttpClient())
+@EnableZipkinServer
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 }
