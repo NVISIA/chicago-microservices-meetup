@@ -110,3 +110,9 @@ springBoot {
 bootRun {
     systemProperties System.properties
 }
+
+bootJar {
+    // adds executable permission to jar file so "bootJar" task can be run as an executable
+    // example run with  `build/libs/demo-1.0.jar`
+    launchScript()
+}

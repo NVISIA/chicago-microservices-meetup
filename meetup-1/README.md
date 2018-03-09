@@ -51,7 +51,7 @@ com.nvisia.demo.latency=10000
 
 Command Line:
 ```
-./gradlew -Dserver.port=9001 \
+./gradlew bootRun -Dserver.port=9001 \
 -Dspring.application.name=foo1 \
 -Dcom.nvisia.demo.chain=foo2,foo3
 ```
