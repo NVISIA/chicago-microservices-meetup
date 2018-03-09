@@ -21,47 +21,38 @@
  */
 package com.nvisia.meetup.microservices.demo.config
 
+import com.nvisia.meetup.microservices.demo.config.properties.CallerProperties
 import com.nvisia.meetup.microservices.demo.domain.model.Chaos
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration
 
 /**
  *     Parses input configuration from command line.
  *
- *     ./gradlew -Dserver.port=9001 -Dcom.nvisia.demo.chain=foo2,foo3,foo4 -Dcom.nvisia.demo.latency=5000 -Dcom.nvisia.demo.exception=true
+ *     ./gradlew clean bootRun -Dserver.port=9001 -Dcom.nvisia.demo.chain=foo2,foo3,foo4 -Dcom.nvisia.demo.latency=5000 -Dcom.nvisia.demo.exception=true
  */
 @Configuration
+@EnableConfigurationProperties(CallerProperties::class)
 class CallerConfig {
 
-    val callerInstances : List<CallerInstance>
+    val callerInstances: List<CallerInstance>
     val chaos: Chaos
 
-    constructor(
-            @Value("\${com.nvisia.demo.chain:}")  callChainString : String,
-            @Value("\${com.nvisia.demo.latency:}") latencyConfig : String,
-            @Value("\${com.nvisia.demo.exception:}") exceptionConfig : String) {
+    constructor(callerProperties: CallerProperties) {
 
         callerInstances = toInstances(
-                parseCallersList(callChainString))
-        chaos = Chaos(parseLatency(latencyConfig),isException(exceptionConfig))
+            parseCallersList(callerProperties.chain)
+        )
+        chaos = Chaos(callerProperties.latency, callerProperties.exception)
     }
 
-    private fun parseCallersList(callChainString: String) : List<HostConfig> {
-        return callChainString.split(',')
-                .filter { !it.isEmpty() }
-                .map { HostConfig(it) }
+    private fun parseCallersList(callChainList: List<String>): List<HostConfig> {
+        return callChainList
+            .filter { !it.isEmpty() }
+            .map { HostConfig(it) }
     }
 
-    private fun parseLatency(latencyConfig: String) : Long {
-        return if (!latencyConfig.isEmpty()) latencyConfig.toLong() else 0
-    }
-
-    private fun isException(exceptionConfig: String) : Boolean {
-        return if (!exceptionConfig.isEmpty()) exceptionConfig.toBoolean() else false
-    }
-
-    private fun toInstances(
-            callers : List<HostConfig>) : List<CallerInstance> {
-            return callers.map { CallerInstance(it) }
+    private fun toInstances(callers: List<HostConfig>): List<CallerInstance> {
+        return callers.map { CallerInstance(it) }
     }
 }

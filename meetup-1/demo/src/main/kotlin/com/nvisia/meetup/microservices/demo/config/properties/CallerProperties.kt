@@ -19,7 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.nvisia.meetup.microservices.demo.config
+
+package com.nvisia.meetup.microservices.demo.config.properties
+
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Configuration
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 
 
-data class HostConfig(val serviceId: String)
+/**
+ * Properties definition for configuration with default values, that allows binding to properties passed to application
+ *
+ * @author Julio Cesar Villalta III <jvillalta@nvisia.com>
+ */
+@Configuration
+@ConfigurationProperties("com.nvisia.demo")
+class CallerProperties(var chain: List<String> = emptyList(),
+                       @Min(0) @Max(60000) var latency: Long = 0,
+                       var exception: Boolean = false)
+
