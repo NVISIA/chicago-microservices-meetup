@@ -6,6 +6,7 @@
 ---
 ### How We Enable Successful Meetups
 <br>
+
 1. NVISIA = Passion && Hard Core Engineering
 2. Technology Consulting Experience
 <br><br>
