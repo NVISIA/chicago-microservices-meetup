@@ -7,7 +7,7 @@
 theme : night
 theme-override : assets/css/PITCHME.css
 # theme-override : assets/css/PITCHME.codemax.css
-logo : assets/image/logo.png
+logo : ./assets/image/nvisia-abe-sq.png
 highlight : atom-one-dark
 transition : none
 published : true
