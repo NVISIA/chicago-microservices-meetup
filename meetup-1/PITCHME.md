@@ -69,8 +69,8 @@ Note:
 ---
 ### Design Considerations
 <br><br>
-- **Service interactions - synchronous or event-based?
-- **Appropriate level of decomposition of domain into bounded contexts following single responsibility principle
+- **Service interactions - synchronous or event-based?**
+- **Appropriate level of decomposition of domain into bounded contexts following single responsibility principle**
 - **Design for Faults**
 - **Distributed Systems Management**
 ---
