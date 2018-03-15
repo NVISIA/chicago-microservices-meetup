@@ -76,7 +76,7 @@ Command Line:
 ##### Demo 3: exception in a service
 
 Introduce latency in foo2 followed by exception in
-service 4
+service 3
 
 Introduce exception in foo3:
 ```
